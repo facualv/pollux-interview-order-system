@@ -2,23 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\Pages\CreateProduct;
 use App\Filament\Resources\ProductResource\Pages\EditProduct;
 use App\Filament\Resources\ProductResource\Pages\ListProducts;
-use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductResource extends Resource
 {
@@ -38,17 +37,27 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('price')->money(),
-                TextColumn::make('description'),
-                TextColumn::make('quantity'),
-                TextColumn::make('is_available'),
+                TextColumn::make('name')->searchable(),
+                TextColumn::make('description')->toggleable(),
+                TextColumn::make('price')->sortable()->money(),
+                TextColumn::make('quantity')->sortable(),
+                IconColumn::make('is_available')->label('Availability')->boolean()->sortable(),
+                TextColumn::make('created_at')->date()->sortable(),
             ])
             ->filters([
-                //
+                TernaryFilter::make('is_available')
+                    ->boolean()
+                    ->label('Availability')
+                    ->trueLabel('Available products')
+                    ->falseLabel('Unavailable products'),
+
             ])
             ->actions([
-                EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ])
             ])
             ->bulkActions([
                 BulkActionGroup::make([
