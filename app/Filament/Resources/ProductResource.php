@@ -6,6 +6,11 @@ use App\Filament\Resources\ProductResource\Pages\CreateProduct;
 use App\Filament\Resources\ProductResource\Pages\EditProduct;
 use App\Filament\Resources\ProductResource\Pages\ListProducts;
 use App\Models\Product;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -29,7 +34,31 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Group::make()->schema([
+                    Section::make()->schema([
+                        TextInput::make('name')
+                            ->required()
+                            ->unique()
+                            ->live(),
+                        TextInput::make('price')
+                            ->required()
+                            ->numeric(),
+                        MarkdownEditor::make('description')->columnSpan('full'),
+                    ])->columns(2),
+                ])->columns(2),
+                
+                Group::make()->schema([
+                    Section::make('Status')->schema([
+                        TextInput::make('quantity')
+                            ->required()
+                            ->numeric(),
+                        Toggle::make('is_available')
+                            ->label('Available')
+                            ->offColor('danger')
+                            ->onColor('success')
+                            ->helperText('Shows if the product is available for sale')
+                    ])->columns(2),
+                ])->columns(2),
             ]);
     }
 
@@ -37,11 +66,18 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('description')->toggleable(),
-                TextColumn::make('price')->sortable()->money(),
-                TextColumn::make('quantity')->sortable(),
-                IconColumn::make('is_available')->label('Availability')->boolean()->sortable(),
+                TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('description')
+                    ->toggleable(true),
+                TextColumn::make('price')
+                    ->sortable()->money(),
+                TextColumn::make('quantity')
+                    ->sortable(),
+                IconColumn::make('is_available')
+                    ->label('Availability')
+                    ->boolean()
+                    ->sortable(),
                 TextColumn::make('created_at')->date()->sortable(),
             ])
             ->filters([
