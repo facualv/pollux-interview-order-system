@@ -18,13 +18,12 @@ use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderResource extends Resource
 {
@@ -122,8 +121,10 @@ class OrderResource extends Resource
             ->actions([
                 EditAction::make(),
                 ViewAction::make(),
-
-            ])
+                Action::make('Download Pdf')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->url(fn(Order $record): string => route('order.pdf.download', ['record' => $record]))
+                    ->openUrlInNewTab(),            ])
             ->bulkActions([
             ])
             ->headerActions([
