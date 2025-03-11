@@ -46,7 +46,7 @@ class ProductResource extends Resource
                         MarkdownEditor::make('description')->columnSpan('full'),
                     ])->columns(2),
                 ])->columns(2),
-                
+
                 Group::make()->schema([
                     Section::make('Status')->schema([
                         TextInput::make('quantity')

@@ -2,10 +2,18 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\OrderStatusEnum;
+use App\Enums\OrderTypeEnum;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
+use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -23,7 +31,68 @@ class OrderResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Wizard::make([
+                    Step::make('Details')->schema([
+                        TextInput::make('number')
+                            ->default('FCA-' . random_int(10000, 999999))
+                            ->disabled()
+                            ->dehydrated()
+                            ->required()
+                            ->maxLength(255),
+
+                        Select::make('user_id')
+                            ->relationship('user', 'name')
+                            ->searchable()
+                            ->required(),
+
+                        Select::make('type')->options([
+                            'delivery' => OrderTypeEnum::DELIVERY->value,
+                            'pickup' => OrderTypeEnum::PICKUP->value,
+                        ])->required(),
+
+                        Select::make('status')
+                            ->options([
+                                'received' => OrderStatusEnum::RECEIVED->value,
+                                'canceled' => OrderStatusEnum::CANCELED->value,
+                                'delivered' => OrderStatusEnum::DELIVERED->value,
+                            ])
+                            ->required()
+                            ->default(OrderStatusEnum::RECEIVED->value)
+                            ->selectablePlaceholder(false),
+
+                    ]),
+
+                    Step::make('Items')->schema([
+                        Repeater::make('items')->relationship()->schema([
+                            Select::make('product_id')
+                                ->label('Product')
+                                ->options(Product::query()->pluck('name', 'id'))
+                                ->required()
+                                ->reactive()
+                                ->afterStateUpdated(
+                                    fn ($state, Forms\Set $set) => $set(
+                                        'unit_price',
+                                        Product::query()->find($state)?->price ?? 0
+                                    )
+                                ),
+
+                            TextInput::make('quantity')
+                                ->numeric()
+                                ->default(1)
+                                ->required(),
+
+                            TextInput::make('unit_price')
+                                ->numeric()
+                                ->disabled()
+                                ->dehydrated()
+                                ->numeric()
+                                ->required()
+
+                        ])->columns(3)
+                    ])
+
+                ])->columnSpanFull(),
+
             ]);
     }
 
@@ -31,7 +100,21 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('number')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('type'),
+                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
