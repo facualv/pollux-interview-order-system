@@ -6,10 +6,10 @@ use App\Enums\OrderStatusEnum;
 use App\Enums\OrderTypeEnum;
 use App\Filament\Exports\OrderExporter;
 use App\Filament\Resources\OrderResource\Pages;
-use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
 use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -17,7 +17,6 @@ use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ExportAction;
@@ -28,8 +27,8 @@ use Filament\Tables\Table;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -90,9 +89,15 @@ class OrderResource extends Resource
                                 ->disabled()
                                 ->dehydrated()
                                 ->numeric()
-                                ->required()
+                                ->required(),
 
-                        ])->columns(3)
+                            Placeholder::make('total_price')
+                                ->label('Total Price')
+                                ->content(function ($get) {
+                                    return $get('quantity') * $get('unit_price');
+                                })
+
+                        ])->columns(4)
                     ])
 
                 ])->columnSpanFull(),
@@ -121,9 +126,9 @@ class OrderResource extends Resource
             ->actions([
                 EditAction::make(),
                 ViewAction::make(),
-                Action::make('Download Pdf')
+                Action::make('Download Invoice')
                     ->icon('heroicon-o-document-arrow-down')
-                    ->url(fn(Order $record): string => route('order.pdf.download', ['record' => $record]))
+                    ->url(fn (Order $order): string => route('order.pdf.download', ['order' => $order]))
                     ->openUrlInNewTab(),            ])
             ->bulkActions([
             ])

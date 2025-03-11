@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\DownloadPdfController;
+use App\Http\Controllers\DownloadInvoiceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/{record}/pdf/download', DownloadPdfController::class)->name('order.pdf.download');
+Route::get('/{order}/pdf/download', DownloadInvoiceController::class)->name('order.pdf.download');
