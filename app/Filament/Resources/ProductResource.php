@@ -39,11 +39,11 @@ class ProductResource extends Resource
                         TextInput::make('name')
                             ->required()
                             ->unique()
-                            ->live(),
+                            ->string(),
                         TextInput::make('price')
-                            ->required()
-                            ->numeric(),
-                        MarkdownEditor::make('description')->columnSpan('full'),
+                            ->rules(['required','numeric', 'decimal:2', 'max:10000'])->live(),
+                        MarkdownEditor::make('description')
+                            ->columnSpan('full'),
                     ])->columns(2),
                 ])->columns(2),
 
