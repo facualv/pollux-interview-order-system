@@ -19,55 +19,55 @@
 
 ```yaml
 Users:
- attributes:
-  id: int
-  name: string
-  email: string
-  password: string
-  remember_token: string
-  created_at: timestamp
-  updated_at: timestamp
- 
- relationships:
-  order: hasMany
-  
+  attributes:
+    id: int
+    name: string
+    email: string
+    password: string
+    remember_token: string
+    created_at: timestamp
+    updated_at: timestamp
+
+  relationships:
+    order: hasMany
+
 Products:
- attributes:
-  id: int
-  name: string
-  description: string
-  is_available: boolean
-  quantity: int
-  price: decimal
-  created_at: timestamp
-  updated_at: timestamp
- 
- relationships:
-	Order Item: hasMany
-  
-Orders:
- attributes:
-  id: int
-  user_id: int
-  number: string
-  total_price: decimal(10,2)
-  status: enum(pending, canceled, dispatched)
-  created_at: timestamp
-  updated_at: timestamp
-	 
- relationships:
-  User: belongsTo
+  attributes:
+    id: int
+    name: string
+    description: string
+    is_available: boolean
+    quantity: int
+    price: decimal
+    created_at: timestamp
+    updated_at: timestamp
+
+  relationships:
   Order Item: hasMany
-	
+
+Orders:
+  attributes:
+    id: int
+    user_id: int
+    number: string
+    total_price: decimal(10,2)
+    status: enum(pending, canceled, dispatched)
+    created_at: timestamp
+    updated_at: timestamp
+
+  relationships:
+    User: belongsTo
+    Order Item: hasMany
+
 Order Item:
- attributes:
-  id: int
-  order_id: int
-  product_id: int
-  quantity: int
-  unit_price: decimal(10,2)
-  created_at: timestamp
-  updated_at: timestamp
+  attributes:
+    id: int
+    order_id: int
+    product_id: int
+    quantity: int
+    unit_price: decimal(10,2)
+    created_at: timestamp
+    updated_at: timestamp
 ```
 
 ## Takeaway Knowledge
