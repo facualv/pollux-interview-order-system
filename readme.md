@@ -47,27 +47,27 @@ Products:
   
 Orders:
  attributes:
-	id: int
-	user_id: int
-	number: string
-	total_price: decimal(10,2)
-	status: enum(pending, canceled, dispatched)
-	created_at: timestamp
-	updated_at: timestamp
+  id: int
+  user_id: int
+  number: string
+  total_price: decimal(10,2)
+  status: enum(pending, canceled, dispatched)
+  created_at: timestamp
+  updated_at: timestamp
 	 
  relationships:
-	User: belongsTo
-	Order Item: hasMany
+  User: belongsTo
+  Order Item: hasMany
 	
 Order Item:
  attributes:
-	id: int
-	order_id: int
-	product_id: int
-	quantity: int
-	unit_price: decimal(10,2)
-	created_at: timestamp
-	updated_at: timestamp
+  id: int
+  order_id: int
+  product_id: int
+  quantity: int
+  unit_price: decimal(10,2)
+  created_at: timestamp
+  updated_at: timestamp
 ```
 
 ## Takeaway Knowledge
