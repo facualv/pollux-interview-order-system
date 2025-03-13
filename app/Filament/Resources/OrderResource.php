@@ -6,6 +6,7 @@ use App\Enums\OrderStatusEnum;
 use App\Enums\OrderTypeEnum;
 use App\Filament\Exports\OrderExporter;
 use App\Filament\Resources\OrderResource\Pages;
+use App\Filament\Resources\OrderResource\RelationManagers\ItemsRelationManager;
 use App\Models\Order;
 use App\Models\Product;
 use Filament\Forms;
@@ -16,6 +17,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Actions;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Tabs\Tab;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
@@ -129,7 +135,8 @@ class OrderResource extends Resource
                 Action::make('Download Invoice')
                     ->icon('heroicon-o-document-arrow-down')
                     ->url(fn (Order $order): string => route('order.pdf.download', ['order' => $order]))
-                    ->openUrlInNewTab(),            ])
+                    ->openUrlInNewTab(),
+                ])
             ->bulkActions([
             ])
             ->headerActions([
@@ -137,10 +144,22 @@ class OrderResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+            Section::make('Order Info')->schema([
+                    TextEntry::make('number')->label('Order Number'),
+                    TextEntry::make('user.name')->label('Created By'),
+                    TextEntry::make('type')->label('Order Type'),
+                    TextEntry::make('status'),
+                    TextEntry::make('created_at')->dateTime(),
+                ])->columns(5)
+        ]);
+    }
     public static function getRelations(): array
     {
         return [
-            //
+            ItemsRelationManager::class
         ];
     }
 
@@ -150,6 +169,7 @@ class OrderResource extends Resource
             'index' => Pages\ListOrders::route('/'),
             'create' => Pages\CreateOrder::route('/create'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
+            'view' => Pages\ViewOrder::route('/{record}/view'),
         ];
     }
 }

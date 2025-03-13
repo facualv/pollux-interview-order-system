@@ -149,3 +149,7 @@ php artisan vendor:publish —tag:filament-config.
 - [x]  Repasar todo lo aprendido.
 - [x]  Subir el repo a Githuib.
 - [x]  Enviar email a David con el link del repositorio.
+
+# **13/03/2025**
+
+- [x]  Mejorar el layout de la vista de una orden. Crear una pagina `ViewOrder.php`.

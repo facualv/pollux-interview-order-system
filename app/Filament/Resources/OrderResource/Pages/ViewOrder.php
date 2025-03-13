@@ -3,23 +3,18 @@
 namespace App\Filament\Resources\OrderResource\Pages;
 
 use App\Filament\Resources\OrderResource;
-use Filament\Actions;
-use Filament\Forms\Form;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\EditAction;
+use Filament\Resources\Pages\ViewRecord;
+use Livewire\Component;
 
-class EditOrder extends EditRecord
+class ViewOrder extends ViewRecord
 {
     protected static string $resource = OrderResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            EditAction::make(),
         ];
-    }
-
-    public function getRelationManagers(): array
-    {
-        return [];
     }
 }
