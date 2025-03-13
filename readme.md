@@ -132,15 +132,16 @@ php artisan vendor:publish —tag:filament-config.
 ## Takeaway Knowledge
 
 - El formulario de autenticación por defecto en **FilamentPHP** se encarga de manejar el inicio de sesión en el panel de administración. Filament usa **Laravel Fortify** internamente para gestionar la autenticación.
-
 - Ejemplos de algunos modificacadores de componentes:
     - Filament permite modificar dinámicamente los campos de los formularios con `hidden()`, `visible()`, `disabled()`, `readonly()`, etc.
     - Se puede establecer valores y opciones dinámicas con `default()`, `options()`, `afterStateUpdated()`, etc.
-    - Los campos pueden reaccionar a cambios de otros con `reactive()`, `live()`, `afterStateUpdated()`.
+    - Los campos pueden reaccionar a cambios de otros con `reactive()`, `live()`.
     - Es posible agregar validaciones y reglas condicionales con `required()`, `rule()`, `helperText()`, etc.
-    
-- Filament facilita la exportación de datos desde las tablas en su panel de administración mediante el uso de **acciones de exportación** (`ExportAction`). Estas acciones exportar fácilmente datos a **formatos como CSV, Excel, PDF y más** desde la interfaz de usuario de Filament. Filament utiliza la libreria `pxlrbt/filament-excel`. Permite exportaciones en segundo plano usando Laravel Queues.
 
+- El método `reactive()` permite que un campo "escuche" cambios en otros campos y ejecute lógica en respuesta.
+- El método `live()` hace que un campo "escuche" cambios en otros campos y actualice su valor o estado en tiempo real.
+- La principal diferencia entre `live()` y `reactive()` es que `live()` actualiza el campo en tiempo real (con una solicitud AJAX), mientras que `reactive()` solo actualiza el campo cuando se envía el formulario.
+- Filament facilita la exportación de datos desde las tablas en su panel de administración mediante el uso de **acciones de exportación** (`ExportAction`). Estas acciones exportar fácilmente datos a **formatos como CSV, Excel, PDF y más** desde la interfaz de usuario de Filament. Filament utiliza la libreria `pxlrbt/filament-excel`. Permite exportaciones en segundo plano usando Laravel Queues.
 - Filament proporciona un sistema para trabajar con **acciones predeterminadas** y **acciones personalizadas**, lo que te permite agregar funcionalidad personalizada a las tablas de tu panel de administración. Las acciones predeterminadas para tablas son **Ver**, **Editar**, **Eliminar**, **Exportar.**
 
 # **11/03/2025**
@@ -157,4 +158,4 @@ php artisan vendor:publish —tag:filament-config.
 ## Takeaway Knowledge
 
 - `dehydrate()` se enfoca en transformar el valor de un campo o componente específico antes de que se guarde o se envíe a la vista.
-- `beforeStateDehydrated()` se utiliza para modificar el estado completo de un modelo antes de que se serialice y guarde
+- `beforeStateDehydrated()` se utiliza para modificar el estado completo de un modelo antes de que se serialice y guarde.
