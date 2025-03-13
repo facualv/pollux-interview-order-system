@@ -75,7 +75,9 @@ class OrderResource extends Resource
                         Repeater::make('items')->relationship()->schema([
                             Select::make('product_id')
                                 ->label('Product')
-                                ->options(Product::query()->pluck('name', 'id'))
+                                ->options(
+                                    Product::query()->where('quantity','>',0)->pluck('name', 'id')
+                                )
                                 ->required()
                                 ->reactive()
                                 ->afterStateUpdated(
@@ -87,14 +89,14 @@ class OrderResource extends Resource
 
                             TextInput::make('quantity')
                                 ->numeric()
+                                ->dehydrated()
+                                ->live()
                                 ->default(1)
                                 ->required(),
 
                             TextInput::make('unit_price')
-                                ->numeric()
                                 ->disabled()
                                 ->dehydrated()
-                                ->numeric()
                                 ->required(),
 
                             Placeholder::make('total_price')

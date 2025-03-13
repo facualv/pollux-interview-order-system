@@ -153,3 +153,8 @@ php artisan vendor:publish —tag:filament-config.
 # **13/03/2025**
 
 - [x]  Mejorar el layout de la vista de una orden. Crear una pagina `ViewOrder.php`.
+
+## Takeaway Knowledge
+
+- `dehydrate()` se enfoca en transformar el valor de un campo o componente específico antes de que se guarde o se envíe a la vista.
+- `beforeStateDehydrated()` se utiliza para modificar el estado completo de un modelo antes de que se serialice y guarde
