@@ -80,6 +80,7 @@ class OrderResource extends Resource
                                 )
                                 ->required()
                                 ->reactive()
+                                ->selectablePlaceholder(false)
                                 ->afterStateUpdated(
                                     fn ($state, Forms\Set $set) => $set(
                                         'unit_price',
