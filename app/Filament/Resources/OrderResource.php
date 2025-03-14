@@ -9,6 +9,7 @@ use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers\ItemsRelationManager;
 use App\Models\Order;
 use App\Models\Product;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
@@ -80,7 +81,7 @@ class OrderResource extends Resource
                                 )
                                 ->required()
                                 ->reactive()
-                                ->selectablePlaceholder(false)
+                                ->selectablePlaceholder()
                                 ->afterStateUpdated(
                                     fn ($state, Forms\Set $set) => $set(
                                         'unit_price',
@@ -89,11 +90,22 @@ class OrderResource extends Resource
                                 ),
 
                             TextInput::make('quantity')
-                                ->numeric()
                                 ->dehydrated()
-                                ->live()
+                                ->numeric()
+                                ->extraInputAttributes([
+                                    'min' => 0,
+                                ])
                                 ->default(1)
-                                ->required(),
+                                ->required()
+                                ->live()
+                                ->rules([
+                                    fn (Forms\Get $get): Closure => function (string $attribute, $value, Closure $fail) use ($get) {
+                                        $currentProductQuantity = Product::query()->find($get('product_id'))?->quantity;
+                                        if ($currentProductQuantity < $value) {
+                                            $fail("The quantity selected is greater than quantity available.");
+                                        }
+                                    },
+                                ]),
 
                             TextInput::make('unit_price')
                                 ->disabled()
