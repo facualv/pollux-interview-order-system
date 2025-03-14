@@ -77,8 +77,7 @@ Order Item:
     - Dashboard por defecto. Se crea un `AdminPanelServiceProvider`.
     - Nos habilita varios comandos de artisan para facilitar el trabajo.
     - Se agregan rutas por defecto, admin, admin/login, admin/logout (formulario de Autenticación por defecto)
-- Filament proporciona un archivo de configuración que se puede publicar con el comando
-php artisan vendor:publish —tag:filament-config.
+- El archivo de configuracion se puede publicar con el comando php artisan vendor:publish —tag:filament-config.
 - ¿Que se puede hacer desde el `AdminPanelServiceProvider` ?
     - Registrar recursos, widgets y páginas.
     - Personalizar la navegación y el tema.
@@ -95,7 +94,7 @@ php artisan vendor:publish —tag:filament-config.
 
 ## Takeaway Knowledge
 
-- Los **Recursos** son el núcleo de Filament. Representan los modelos de Eloquent y permiten gestionar (crear, leer, actualizar y eliminar) registros en la base de datos. Cada recurso está asociado a un modelo de Laravel y define cómo se muestran y gestionan los datos en el panel de administración. Para ver todas las propiedades y el comportamiento revisar la clase abstracta `Resource` .
+- Los **Recursos** son el núcleo de Filament. Permiten gestionar (crear, leer, actualizar y eliminar) registros en la base de datos. Cada recurso está asociado a un modelo de Laravel y define cómo se muestran y gestionan los datos en el panel de administración. Para ver todas las propiedades y el comportamiento revisar la clase abstracta `Resource` .
 
 - El método `form()` se utiliza para definir los campos y la estructura de los formularios en Filament. Estos formularios se usan tanto para la creación como para la edición de registros.¿Qué puedo hacer con `form()`?
     - Agregar campos de entrada (inputs) como texto, números, selectores, etc.
@@ -131,18 +130,18 @@ php artisan vendor:publish —tag:filament-config.
 
 ## Takeaway Knowledge
 
-- El formulario de autenticación por defecto en **FilamentPHP** se encarga de manejar el inicio de sesión en el panel de administración. Filament usa **Laravel Fortify** internamente para gestionar la autenticación.
+- El formulario de autenticación por defecto se encarga de manejar el inicio de sesión en el panel de administración. Usa **Laravel Fortify** internamente para gestionar la autenticación.
 - Ejemplos de algunos modificacadores de componentes:
-    - Filament permite modificar dinámicamente los campos de los formularios con `hidden()`, `visible()`, `disabled()`, `readonly()`, etc.
+    - Se puede modificar dinámicamente los campos de los formularios con `hidden()`, `visible()`, `disabled()`, `readonly()`, etc.
     - Se puede establecer valores y opciones dinámicas con `default()`, `options()`, `afterStateUpdated()`, etc.
     - Los campos pueden reaccionar a cambios de otros con `reactive()`, `live()`.
     - Es posible agregar validaciones y reglas condicionales con `required()`, `rule()`, `helperText()`, etc.
-
 - El método `reactive()` permite que un campo "escuche" cambios en otros campos y ejecute lógica en respuesta.
-- El método `live()` hace que un campo "escuche" cambios en otros campos y actualice su valor o estado en tiempo real.
+- Por defecto, cuando un campo está configurado con `live()`, el formulario se volverá a renderizar cada vez que se interactúe con el campo..
+- `live()` valida en cada tecla presionada, `live(onBlur: true)` valida menos frecuentemente, lo que puede mejorar el rendimiento en formularios complejos.
 - La principal diferencia entre `live()` y `reactive()` es que `live()` actualiza el campo en tiempo real (con una solicitud AJAX), mientras que `reactive()` solo actualiza el campo cuando se envía el formulario.
-- Filament facilita la exportación de datos desde las tablas en su panel de administración mediante el uso de **acciones de exportación** (`ExportAction`). Estas acciones exportar fácilmente datos a **formatos como CSV, Excel, PDF y más** desde la interfaz de usuario de Filament. Filament utiliza la libreria `pxlrbt/filament-excel`. Permite exportaciones en segundo plano usando Laravel Queues.
-- Filament proporciona un sistema para trabajar con **acciones predeterminadas** y **acciones personalizadas**, lo que te permite agregar funcionalidad personalizada a las tablas de tu panel de administración. Las acciones predeterminadas para tablas son **Ver**, **Editar**, **Eliminar**, **Exportar.**
+- Exportación de datos desde las tablas en su panel de administración mediante el uso de **acciones de exportación** (`ExportAction`). Estas acciones exportar fácilmente datos a **formatos como CSV, Excel, PDF y más**. Filament utiliza la libreria `pxlrbt/filament-excel`. y permite exportaciones en segundo plano usando Laravel Queues.
+- Existen **acciones predeterminadas** y **acciones personalizadas**, Las acciones predeterminadas para tablas son **Ver**, **Editar**, **Eliminar**, **Exportar.**
 
 # **11/03/2025**
 
@@ -157,5 +156,26 @@ php artisan vendor:publish —tag:filament-config.
 
 ## Takeaway Knowledge
 
-- `dehydrate()` se enfoca en transformar el valor de un campo o componente específico antes de que se guarde o se envíe a la vista.
+- `hydrateState()` se ejecuta después de que los datos se cargan desde la base de datos y antes de que se muestren en el formulario.
+- `dehydrate()` se ejecuta antes de que los datos se guarden en la base de datos (en el caso de formularios) o antes de que se muestren en la interfaz (en el caso de infolists).
 - `beforeStateDehydrated()` se utiliza para modificar el estado completo de un modelo antes de que se serialice y guarde.
+- El ciclo de vida de los componentes de Filament sigue la estructura de Livewire:
+
+    - Montaje del componente: Cuando un componente de Filament se inicializa, se ejecuta el método `mount()`. Aca se puede hacer consultas a la base de datos o preparar datos antes de que el componente se renderice.
+    - Renderizacion del componente: Luego del montaje se ejecuta el método `render()`, que devuelve la vista del componente. Se ejecuta cada vez que el componente se vuelve a renderizar.
+    - Hydratación y Deshidratacíon: Estos métodos se ejecutan cuando el estado del componente se sincroniza con el frontend o se recupera en una solicitud de Livewire.
+          - **`hydrate()`** → Se ejecuta cuando Livewire reconstruye el estado del componente.
+          - **`dehydrate()`** → Se ejecuta antes de que Livewire envíe el estado al frontend.
+    - Cuando una propiedad cambia, Filament ejecutan estos metodos:
+          - `updating($property, $value)`: Antes de actualizar la propiedad.
+          - `updated($property, $value)`: Después de actualizar la propiedad.
+    - Destruccion del componente: si un componente se elimina de la vista, se ejecuta `destroy()`.
+
+- Las tablas y formularios tienen sus propios metodos de ciclo de vida:
+  - `beforeFill()`: Antes de que los datos llenen el formulario.
+  - `afterFill()`: Después de que los datos llenen el formulario.
+  - `beforeValidate()`: Antes de validar los datos.
+  - `afterValidate()`: Después de validar los datos.
+  - `beforeSave()`: Antes de guardar el formulario.
+  - `afterSave()`: Después de guardar el formulario.
+
