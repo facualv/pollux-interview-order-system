@@ -50,6 +50,7 @@ class ProductResource extends Resource
                 Group::make()->schema([
                     Section::make('Status')->schema([
                         TextInput::make('quantity')
+                            ->extraInputAttributes(['min' => 0,])
                             ->required()
                             ->numeric(),
                         Toggle::make('is_available')

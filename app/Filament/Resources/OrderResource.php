@@ -96,9 +96,7 @@ class OrderResource extends Resource
                             TextInput::make('quantity')
                                 ->dehydrated()
                                 ->numeric()
-                                ->extraInputAttributes([
-                                    'min' => 0,
-                                ])
+                                ->extraInputAttributes(['min' => 0,])
                                 ->default(1)
                                 ->required()
                                 ->live()
