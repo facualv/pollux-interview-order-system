@@ -121,7 +121,7 @@ Order Item:
 - [x]  Funcionalidad de notificaciones. Agregar migraciones de colas. (acordate del worker para que funcionen las colas).
 - [x]  Recurso Usuarios. Solo quiero ver los usuarios y las ordenes que tienen creadas. Ver RelationshipManager.
 - [x]  Funcionalidad de exportar csvs y excel. Agregar migraciones.
-- [x]  PATRON DE DISEÑO PORTS & ADAPTERS:
+- [x]  PATRON DE DISEÑO ADAPTER:
     - [x]  Crear una accion de tabla customizada para generar una factura por la orden de venta.
     - [x]  Crear controlador y clase servicio `GenerateInvoiceService` para manejar esta accion (podria ser un evento tambien).
     - [x]  Crear interfaz `InvoiceGenerator`, crear dos adaptadores (uno por paquete) que implementen la interfaz.
